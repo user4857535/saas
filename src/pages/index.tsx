@@ -1,138 +1,118 @@
+import Image from 'next/image';
 import React, { useState } from 'react';
 
-const InquiryForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+const ImageGrid: React.FC = () => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send formData to the server
-    console.log('Form Submitted:', formData);
+    console.log('Form submitted:', formData);
   };
+
+const images = Array.from({ length: 4 }, (_, index) => ({
+  src: index === 0 ? '/hindu.webp' :
+       index === 1 ? '/school.webp' :
+       index === 2 ? '/skater.webp' :
+       '/chicken.webp', // Correct public path
+  alt: `Image ${index + 1}`
+}));
+
 
   return (
     <div style={styles.container}>
-      <div style={styles.box}>
-        <div style={styles.imageGrid}>
-          {/* Render 10 images */}
-          {Array.from({ length: 10 }, (_, index) => (
-            <img
-              key={index}
-              src={`https://via.placeholder.com/100?text=Image${index + 1}`}
-              alt={`Image ${index + 1}`}
-              style={styles.image}
-            />
-          ))}
-        </div>
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.inputGroup}>
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              placeholder="Your name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              style={styles.input}
-              required
+      <div style={styles.gridContainer}>
+        {images.map((image, index) => (
+          <div key={index} style={styles.imageWrapper}>
+            <Image src={image.src}
+              alt={image.alt}
+              width={200}
+              height={200}
+              layout="responsive"
+              unoptimized
             />
           </div>
-          <div style={styles.inputGroup}>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              placeholder="example@email.com"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              style={styles.input}
-              required
-            />
-          </div>
-          <div style={styles.inputGroup}>
-            <label htmlFor="message">Message:</label>
-            <textarea
-              id="message"
-              name="message"
-              placeholder="Your message"
-              value={formData.message}
-              onChange={handleChange}
-              style={styles.textarea}
-              required
-            />
-          </div>
-          <button type="submit" style={styles.submitButton}>Submit</button>
-        </form>
+        ))}
       </div>
-      <footer style={styles.footer}>
-        <p>© 2025 Simon Kellner - All Rights Reserved</p>
-      </footer>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Your Name"
+          value={formData.name}
+          onChange={handleChange}
+          style={styles.input}
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Your Email"
+          value={formData.email}
+          onChange={handleChange}
+          style={styles.input}
+          required
+        />
+        <textarea
+          name="message"
+          placeholder="Your Message"
+          value={formData.message}
+          onChange={handleChange}
+          style={styles.textarea}
+          required
+        />
+        <button type="submit" style={styles.submitButton}>Submit</button>
+      </form>
     </div>
   );
 };
 
-const styles = {
+const styles: { [key: string]: React.CSSProperties } = {
   container: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     padding: '20px',
-    backgroundColor: '#f4f4f4',
   },
-  box: {
-    width: '80%',
-    maxWidth: '900px',
-    padding: '20px',
-    backgroundColor: '#fff',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    borderRadius: '8px',
-    textAlign: 'center',
-  },
-  imageGrid: {
+  gridContainer: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(5, 1fr)',
-    gap: '10px',
-    marginBottom: '20px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+    gap: '16px',
+    padding: '16px',
+
   },
-  image: {
-    width: '100%',
-    height: 'auto',
-    borderRadius: '8px',
+  imageWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '15px',
-  },
-  inputGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    marginTop: '20px',
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    width: '100%',
+    maxWidth: '400px',
+    backgroundColor: '#f9f9f9',
   },
   input: {
     width: '100%',
     padding: '10px',
-    marginTop: '5px',
+    margin: '5px 0',
     borderRadius: '4px',
     border: '1px solid #ccc',
   },
   textarea: {
     width: '100%',
     padding: '10px',
-    marginTop: '5px',
+    margin: '5px 0',
     borderRadius: '4px',
     border: '1px solid #ccc',
     resize: 'vertical',
@@ -145,17 +125,8 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '16px',
+    marginTop: '10px',
   },
-  footer: {
-    marginTop: '40px',
-    textAlign: 'center',
-    fontSize: '14px',
-    color: '#555',
-    borderTop: '1px solid #ccc',
-    paddingTop: '10px',
-    width: '100%',
-  }
 };
 
-export default InquiryForm;
-
+export default ImageGrid;
